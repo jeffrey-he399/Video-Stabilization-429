@@ -1,0 +1,16 @@
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# MATLAB
+*.asv
+*.m~
+*.mex*
+octave-workspace
+
+# Output files
+output/
+
+# Academic papers
+Academic/
