@@ -1,5 +1,7 @@
 % by Mateo Noriega
-% Input: frames — cell array of uint8 frames, file_name — output filename, fps — frame rate
+% Input: frames — cell array of uint8 frames
+%        file_name — output filename
+%        fps — frame rate
 % Output: none — writes the frames as an MPEG-4 video to the output/ directory
 function saveVideo(frames, file_name, fps)
 

@@ -1,13 +1,10 @@
-clc;
-clear;
-
-setup();
+clc; clear; setup();
 
 %% Video library
 
 % % Test loadVideo
 disp("## Test loadVideo")
-video_obj = loadVideo('test.mp4');
+video_obj = loadVideo('hand_held2.mov');
 
 
 % % Test extractFrame
@@ -85,3 +82,49 @@ plot(pts2_offset(:,1), pts2_offset(:,2), 'ro', 'MarkerSize', 4);
 title('Inlier matched features (frame 1 vs frame 10)');
 hold off;
 % ---- end Claude ----
+
+
+% % Test computeTrajectory
+trajectory = computeTrajectory(video_obj);
+
+figure;
+plot(trajectory(:,1), 'r'); hold on;
+plot(trajectory(:,2), 'g');
+plot(trajectory(:,3), 'b');
+legend('dx', 'dy', 'dTheta');
+xlabel('Frame');
+ylabel('Cumulative displacement');
+title('Raw camera trajectory');
+hold off;
+
+
+% % Test smoothTrajectory
+smooth_trajectory = smoothTrajectory(trajectory, 30);
+
+figure;
+plot(smooth_trajectory(:,1), 'r'); hold on;
+plot(smooth_trajectory(:,2), 'g');
+plot(smooth_trajectory(:,3), 'b');
+legend('dx', 'dy', 'dTheta');
+xlabel('Frame');
+ylabel('Cumulative displacement');
+title('Smoothed camera trajectory');
+hold off;
+
+
+%% Test applyStabilization
+clear; setup();
+
+vid_obj = loadVideo('hand_held1.mov');
+
+raw_frames_rgb = extractFrameRange(vid_obj, 1, vid_obj.NumFrames);
+
+raw_traj = computeTrajectory(vid_obj);
+
+smooth_traj = smoothTrajectory(raw_traj, 30); % Window of 30 frames in a 30 fps video (1s)
+
+correct_traj = smooth_traj - raw_traj;
+
+stabilized_frames_rgb = applyStabilization(raw_frames_rgb, correct_traj);
+
+saveVideo(stabilized_frames_rgb, 'smooth_hand_held1.mp4', vid_obj.FrameRate);
