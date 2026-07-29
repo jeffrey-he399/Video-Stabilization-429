@@ -114,8 +114,8 @@ hold off;
 
 %% Test applyStabilization
 clear; setup();
-
-vid_obj = loadVideo('hand_held1.mov');
+fileName = 'hand_held1.mov';
+vid_obj = loadVideo(fileName);
 
 raw_frames_rgb = extractFrameRange(vid_obj, 1, vid_obj.NumFrames);
 
@@ -127,4 +127,8 @@ correct_traj = smooth_traj - raw_traj;
 
 stabilized_frames_rgb = applyStabilization(raw_frames_rgb, correct_traj);
 
-saveVideo(stabilized_frames_rgb, 'smooth_hand_held1.mp4', vid_obj.FrameRate);
+[stabilized_frames_rgb, crop_rect] = blackBorder(stabilized_frames_rgb, correct_traj);
+fprintf('Black-border crop: x=%d, y=%d, width=%d, height=%d\n', ...
+  crop_rect(1), crop_rect(2), crop_rect(3), crop_rect(4));
+
+saveVideo(stabilized_frames_rgb, fileName, vid_obj.FrameRate);
